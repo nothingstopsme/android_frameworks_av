@@ -46,6 +46,7 @@ class Surface;
 struct MediaCodec : public AHandler {
     enum ConfigureFlags {
         CONFIGURE_FLAG_ENCODE   = 1,
+        CONFIGURE_FLAG_THUMBNAIL = 2,
     };
 
     enum BufferFlags {

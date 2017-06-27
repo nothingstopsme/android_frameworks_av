@@ -1644,6 +1644,9 @@ status_t MPEG4Extractor::parseChunk(off64_t *offset, int depth) {
         case FOURCC('a', 'v', 'c', '1'):
         case FOURCC('h', 'v', 'c', '1'):
         case FOURCC('h', 'e', 'v', '1'):
+        case FOURCC('j', 'p', 'e', 'g'):
+        case FOURCC('M', 'J', 'P', 'G')://sprd add for bug 591504
+        case FOURCC('M', 'P', 'G', '2'):
         {
             uint8_t buffer[78];
             if (chunk_data_size < (ssize_t)sizeof(buffer)) {

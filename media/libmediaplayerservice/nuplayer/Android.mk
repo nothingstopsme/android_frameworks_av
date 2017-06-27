@@ -27,6 +27,7 @@ LOCAL_SRC_FILES:=                       \
         NuPlayerStreamListener.cpp      \
         RTSPSource.cpp                  \
         StreamingSource.cpp             \
+        avc_utils_sprd.cpp              \
 
 LOCAL_C_INCLUDES := \
 	$(TOP)/frameworks/av/media/libstagefright                     \
@@ -51,6 +52,10 @@ ifeq ($(strip $(DOLBY_ENABLE)),true)
     LOCAL_CFLAGS += $(dolby_cflags)
 endif
 # DOLBY_END
+
+ifeq ($(strip $(BOARD_VSP_SUPPORT_1080I)),true)
+LOCAL_CFLAGS += -DCONFIG_VSP_SUPPORT_1080I
+endif
 
 LOCAL_CLANG := true
 

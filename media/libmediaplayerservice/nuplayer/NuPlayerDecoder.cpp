@@ -64,6 +64,11 @@
 
 #include "avc_utils.h"
 #include "ATSParser.h"
+
+#ifdef CONFIG_VSP_SUPPORT_1080I
+#include "avc_utils_sprd.h"
+#endif
+
 #ifdef DOLBY_ENABLE
 #include "DolbyNuPlayerDecoderExtImpl.h"
 #endif // DOLBY_END
@@ -291,6 +296,13 @@ void NuPlayer::Decoder::onConfigure(const sp<AMessage> &format) {
     mComponentName.append(" decoder");
     ALOGV("[%s] onConfigure (surface=%p)", mComponentName.c_str(), mSurface.get());
 
+#ifdef CONFIG_VSP_SUPPORT_1080I
+    sp<ABuffer> sps;
+    if (mIsVideoAVC && format->findBuffer("csd-0", &sps) && (isInterlacedSequence(sps->data(), sps->size()) == 1)) {
+            ALOGI("interlace avc stream, create vpu decoder");
+            mCodec = MediaCodec::CreateByComponentName(mCodecLooper,
+                             "OMX.vpu.video_decoder.avc", NULL /* err */, mPid);
+    } else {
     mCodec = AVUtils::get()->createCustomComponentByName(mCodecLooper, mime.c_str(), false /* encoder */, format);
     FFMPEGSoftCodec::overrideComponentName(0, format, &mComponentName, &mime, false);
 
@@ -303,6 +315,21 @@ void NuPlayer::Decoder::onConfigure(const sp<AMessage> &format) {
                     mCodecLooper, mime.c_str(), false /* encoder */, NULL /* err */, mPid);
         }
     }
+}
+#else
+   mCodec = AVUtils::get()->createCustomComponentByName(mCodecLooper, mime.c_str(), false /* encoder */, format);
+    FFMPEGSoftCodec::overrideComponentName(0, format, &mComponentName, &mime, false);
+
+    if (mCodec == NULL) {
+        if (!mComponentName.startsWith(mime.c_str())) {
+            mCodec = MediaCodec::CreateByComponentName(
+                    mCodecLooper, mComponentName.c_str(), NULL, mPid);
+        } else {
+            mCodec = MediaCodec::CreateByType(
+                    mCodecLooper, mime.c_str(), false /* encoder */, NULL /* err */, mPid);
+        }
+     }
+#endif
 
     int32_t secure = 0;
     if (format->findInt32("secure", &secure) && secure != 0) {

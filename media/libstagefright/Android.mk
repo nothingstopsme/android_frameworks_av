@@ -77,6 +77,7 @@ LOCAL_SRC_FILES:=                         \
         WVMExtractor.cpp                  \
         XINGSeeker.cpp                    \
         avc_utils.cpp                     \
+	avc_utils_sprd.cpp                \
         FFMPEGSoftCodec.cpp               \
 
 LOCAL_C_INCLUDES:= \
@@ -187,6 +188,10 @@ endif
 
 LOCAL_CLANG := true
 LOCAL_SANITIZE := unsigned-integer-overflow signed-integer-overflow
+
+ifeq ($(strip $(BOARD_VSP_SUPPORT_1080I)),true)
+LOCAL_CFLAGS += -DCONFIG_VSP_SUPPORT_1080I
+endif
 
 # FFMPEG plugin
 LOCAL_C_INCLUDES += $(TOP)/external/stagefright-plugins/include
