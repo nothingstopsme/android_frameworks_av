@@ -24,6 +24,7 @@
 #include <utils/String8.h>
 #include <utils/Vector.h>
 #include <utils/KeyedVector.h>
+#include <log/log.h>
 
 namespace android {
 
@@ -140,6 +141,7 @@ public:
         pPlugInContainer->hHandle = dlopen(rsPlugInPath.string(), RTLD_LAZY);
 
         if (NULL == pPlugInContainer->hHandle) {
+						ALOGE("%s failed: %s", __func__, dlerror());
             delete pPlugInContainer;
             pPlugInContainer = NULL;
             return;
@@ -159,6 +161,7 @@ public:
             dlclose(pPlugInContainer->hHandle);
             delete pPlugInContainer;
             pPlugInContainer = NULL;
+						ALOGE("%s failed: needed symbols are not found in %s", __func__, rsPlugInPath.string());
             return;
         }
     }

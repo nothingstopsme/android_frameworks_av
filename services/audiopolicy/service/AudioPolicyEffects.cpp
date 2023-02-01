@@ -430,7 +430,7 @@ void AudioPolicyEffects::EffectVector::setProcessorEnabled(bool enabled)
 // Audio processing configuration
 // ----------------------------------------------------------------------------
 
-/*static*/ const char * const AudioPolicyEffects::kInputSourceNames[AUDIO_SOURCE_CNT -1] = {
+/*static*/ const char * const AudioPolicyEffects::kInputSourceNames[AUDIO_SOURCE_CNT-1] = {
     MIC_SRC_TAG,
     VOICE_UL_SRC_TAG,
     VOICE_DL_SRC_TAG,
@@ -438,6 +438,7 @@ void AudioPolicyEffects::EffectVector::setProcessorEnabled(bool enabled)
     CAMCORDER_SRC_TAG,
     VOICE_REC_SRC_TAG,
     VOICE_COMM_SRC_TAG,
+		NULL, // skipping AUDIO_SOURCE_REMOTE_SUBMIX
     UNPROCESSED_SRC_TAG
 };
 
@@ -447,7 +448,7 @@ void AudioPolicyEffects::EffectVector::setProcessorEnabled(bool enabled)
 {
     int i;
     for (i = AUDIO_SOURCE_MIC; i < AUDIO_SOURCE_CNT; i++) {
-        if (strcmp(name, kInputSourceNames[i - AUDIO_SOURCE_MIC]) == 0) {
+        if (kInputSourceNames[i - AUDIO_SOURCE_MIC] && strcmp(name, kInputSourceNames[i - AUDIO_SOURCE_MIC]) == 0) {
             ALOGV("inputSourceNameToEnum found source %s %d", name, i);
             break;
         }
@@ -475,7 +476,7 @@ audio_stream_type_t AudioPolicyEffects::streamNameToEnum(const char *name)
 {
     int i;
     for (i = AUDIO_STREAM_DEFAULT; i < AUDIO_STREAM_PUBLIC_CNT; i++) {
-        if (strcmp(name, kStreamNames[i - AUDIO_STREAM_DEFAULT]) == 0) {
+        if (kStreamNames[i - AUDIO_STREAM_DEFAULT] && strcmp(name, kStreamNames[i - AUDIO_STREAM_DEFAULT]) == 0) {
             ALOGV("streamNameToEnum found stream %s %d", name, i);
             break;
         }

@@ -1786,6 +1786,13 @@ const char *ACodec::getComponentRole(
         { MEDIA_MIMETYPE_AUDIO_EAC3_JOC,
             "audio_decoder.eac3_joc", NULL },
 #endif // DOLBY_END
+
+				//additional codec support
+				{ MEDIA_MIMETYPE_VIDEO_MJPG,
+					"video_decoder.mjpg", "video_encoder.mjpg" },
+
+				{ MEDIA_MIMETYPE_AUDIO_IMA,
+					"audio_decoder.imaadpcm", "audio_encoder.imaadpcm" },
     };
 
     static const size_t kNumMimeToRole =

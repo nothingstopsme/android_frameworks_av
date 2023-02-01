@@ -639,6 +639,13 @@ private:
         ANativeWindowBuffer* anb;
         rc = native_window_dequeue_buffer_and_wait(a, &anb);
         if (!rc) {
+						/*
+							Hack for camera.sc8830.so: copying the new "base" field (data[9]) to the "width" field (data[5]) at which the old camera hal library looks for the "base" value.
+							the value in data[5] will be kept in the "padding" filed (data[10]), so that it can be recovered later.							
+						*/
+						native_handle_t *native_handle = const_cast<native_handle_t*>(anb->handle);
+						native_handle->data[10] = native_handle->data[5];
+						native_handle->data[5] = native_handle->data[9];
             *buffer = &anb->handle;
             *stride = anb->stride;
         }
@@ -663,6 +670,13 @@ private:
                       buffer_handle_t* buffer)
     {
         ANativeWindow *a = anw(w);
+				if(buffer)
+				{
+					//Undo the "Hack for camera.sc8830.so"
+					native_handle_t *native_handle = const_cast<native_handle_t*>(*buffer);
+					native_handle->data[5] = native_handle->data[10];
+				}
+
         return a->queueBuffer(a,
                   container_of(buffer, ANativeWindowBuffer, handle), -1);
     }
@@ -671,6 +685,13 @@ private:
                       buffer_handle_t* buffer)
     {
         ANativeWindow *a = anw(w);
+				if(buffer)
+				{
+					//Undo the "Hack for camera.sc8830.so"
+					native_handle_t *native_handle = const_cast<native_handle_t*>(*buffer);
+					native_handle->data[5] = native_handle->data[10];
+				}
+
         return a->cancelBuffer(a,
                   container_of(buffer, ANativeWindowBuffer, handle), -1);
     }

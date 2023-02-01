@@ -184,6 +184,7 @@ sp<DecryptHandle> FileSource::DrmInitialization(const char *mime) {
     if (mDecryptHandle == NULL) {
         mDecryptHandle = mDrmManagerClient->openDecryptSession(
                 mFd, mOffset, mLength, mime);
+				
     }
 
     if (mDecryptHandle == NULL) {
@@ -195,9 +196,24 @@ sp<DecryptHandle> FileSource::DrmInitialization(const char *mime) {
 }
 
 void FileSource::getDrmInfo(sp<DecryptHandle> &handle, DrmManagerClient **client) {
-    handle = mDecryptHandle;
 
-    *client = mDrmManagerClient;
+		if(handle.get())
+		{		
+				/*
+					Vendor library will mysteriously call this function but pass in invalid arguments and cause crashes.
+					The reason of this behaviour is unkown, and currently the check below is used to detect this case and return immediately once it is found.
+				*/
+				if(handle.get() != handle->getWeakRefs()->refBase() || handle->getWeakRefs()->getWeakCount() < 0 || handle->getStrongCount() < 0)
+				{
+						ALOGE("%s: a bad handle has been given: handle = %p, RefBase = %p, client = %p, getWeakCount() = %d, getStrongCount() = %d", __func__, handle.get(), handle->getWeakRefs()->refBase(), client, handle->getWeakRefs()->getWeakCount(), handle->getStrongCount());
+						return;
+				}
+		}
+			
+		handle = mDecryptHandle;
+
+	  *client = mDrmManagerClient;
+
 }
 
 ssize_t FileSource::readAtDRM(off64_t offset, void *data, size_t size) {

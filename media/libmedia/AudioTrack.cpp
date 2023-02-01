@@ -282,6 +282,28 @@ AudioTrack::~AudioTrack()
 }
 
 status_t AudioTrack::set(
+                         audio_stream_type_t streamType,
+                         uint32_t sampleRate,
+                         audio_format_t format,
+                         audio_channel_mask_t channelMask,
+                         size_t frameCount,
+                         audio_output_flags_t flags,
+                         callback_t cbf,
+                         void* user,
+                         uint32_t notificationFrames,
+                         const sp<IMemory>& sharedBuffer,
+                         bool threadCanCallJava,
+                         int sessionId,
+                         transfer_type transferType,
+                         const audio_offload_info_t *offloadInfo,
+                         int uid,
+                         pid_t pid,
+                         const audio_attributes_t* pAttributes)
+{
+        return set(streamType, sampleRate, format, channelMask, frameCount, flags, cbf, user, notificationFrames, sharedBuffer, threadCanCallJava, static_cast<audio_session_t>(sessionId), transferType, offloadInfo, uid, pid, pAttributes, false, 1.0f);
+}
+
+status_t AudioTrack::set(
         audio_stream_type_t streamType,
         uint32_t sampleRate,
         audio_format_t format,
@@ -1589,6 +1611,12 @@ release:
     return status;
 }
 
+
+status_t AudioTrack::obtainBuffer(Buffer* audioBuffer, int32_t waitCount)
+{
+	return obtainBuffer(audioBuffer, waitCount, NULL);
+}
+
 status_t AudioTrack::obtainBuffer(Buffer* audioBuffer, int32_t waitCount, size_t *nonContig)
 {
     if (audioBuffer == NULL) {
@@ -1698,6 +1726,11 @@ status_t AudioTrack::obtainBuffer(Buffer* audioBuffer, const struct timespec *re
         *nonContig = buffer.mNonContig;
     }
     return status;
+}
+
+void AudioTrack::releaseBuffer(Buffer* audioBuffer)
+{
+		releaseBuffer(const_cast<const Buffer*>(audioBuffer));
 }
 
 void AudioTrack::releaseBuffer(const Buffer* audioBuffer)

@@ -137,6 +137,8 @@ public:
      * opPackageName:      The package name used for app ops.
      */
                         AudioRecord(const String16& opPackageName);
+												// Adding default constructor for backward compatibility
+												AudioRecord();
 
     /* Creates an AudioRecord object and registers it with AudioFlinger.
      * Once created, the track needs to be started before it can be used.
@@ -221,6 +223,21 @@ public:
                             int uid = -1,
                             pid_t pid = -1,
                             const audio_attributes_t* pAttributes = NULL);
+						// the backward-compatible version of set()
+						status_t		set(
+										audio_source_t inputSource,
+										uint32_t sampleRate,
+										audio_format_t format,
+										audio_channel_mask_t channelMask,
+										size_t frameCount,
+										callback_t cbf,
+										void* user,
+										uint32_t notificationFrames,
+										bool threadCanCallJava,
+										int sessionId,
+										transfer_type transferType,
+										audio_input_flags_t flags,
+										const audio_attributes_t* pAttributes);
 
     /* Result of constructing the AudioRecord. This must be checked for successful initialization
      * before using any AudioRecord API (except for set()), because using
@@ -250,6 +267,8 @@ public:
      */
             status_t    start(AudioSystem::sync_event_t event = AudioSystem::SYNC_EVENT_NONE,
                               audio_session_t triggerSession = AUDIO_SESSION_NONE);
+						// the backward-compatible version over start()
+						status_t		start(AudioSystem::sync_event_t event, int triggerSession);
 
     /* Stop a track.  The callback will cease being called.  Note that obtainBuffer() still
      * works and will drain buffers until the pool is exhausted, and then will return WOULD_BLOCK.
@@ -479,7 +498,9 @@ public:
      * false for the method to return immediately without waiting to try multiple times to read
      * the full content of the buffer.
      */
-            ssize_t     read(void* buffer, size_t size, bool blocking = true);
+            ssize_t     read(void* buffer, size_t size, bool blocking);
+						// makeing read() two overloading functions instead of using a default argument for "blocking" for backward compatiblity
+						ssize_t			read(void* buffer, size_t userSize);
 
     /* Return the number of input frames lost in the audio driver since the last call of this
      * function.  Audio driver is expected to reset the value to 0 and restart counting upon

@@ -66,6 +66,11 @@ status_t AudioRecord::getMinFrameCount(
 
 // ---------------------------------------------------------------------------
 
+AudioRecord::AudioRecord()
+		: AudioRecord(String16("default"))
+{
+}
+
 AudioRecord::AudioRecord(const String16 &opPackageName)
     : mActive(false), mStatus(NO_INIT), mOpPackageName(opPackageName), mSessionId(AUDIO_SESSION_ALLOCATE),
       mPreviousPriority(ANDROID_PRIORITY_NORMAL), mPreviousSchedulingGroup(SP_DEFAULT),
@@ -129,6 +134,24 @@ AudioRecord::~AudioRecord()
                 mSessionId);
         AudioSystem::releaseAudioSessionId(mSessionId, -1 /*pid*/);
     }
+}
+
+status_t AudioRecord::set(
+        audio_source_t inputSource,
+        uint32_t sampleRate,
+        audio_format_t format,
+        audio_channel_mask_t channelMask,
+        size_t frameCount,
+        callback_t cbf,
+        void* user,
+        uint32_t notificationFrames,
+        bool threadCanCallJava,
+        int sessionId,
+        transfer_type transferType,
+        audio_input_flags_t flags,
+        const audio_attributes_t* pAttributes)
+{
+    return set(inputSource, sampleRate, format, channelMask, frameCount, cbf, user, notificationFrames, threadCanCallJava, static_cast<audio_session_t>(sessionId), transferType, flags, -1, -1, pAttributes);
 }
 
 status_t AudioRecord::set(
@@ -293,6 +316,11 @@ status_t AudioRecord::set(
 }
 
 // -------------------------------------------------------------------------
+
+status_t AudioRecord::start(AudioSystem::sync_event_t event, int triggerSession)
+{
+		return start(event, static_cast<audio_session_t>(triggerSession));
+}
 
 status_t AudioRecord::start(AudioSystem::sync_event_t event, audio_session_t triggerSession)
 {
@@ -872,6 +900,13 @@ audio_io_handle_t AudioRecord::getInputPrivate() const
 }
 
 // -------------------------------------------------------------------------
+
+
+ssize_t AudioRecord::read(void* buffer, size_t userSize)
+{
+		return read(buffer, userSize, true);
+}
+
 
 ssize_t AudioRecord::read(void* buffer, size_t userSize, bool blocking)
 {

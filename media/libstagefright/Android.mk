@@ -120,6 +120,12 @@ LOCAL_SHARED_LIBRARIES := \
         libz \
         libpowermanager \
 
+# vendor's drm libraries require this, but it seems like there will be linking issues
+# if it is loaded upon the calling of dlopen() on vendor's drm libraries; therefore 
+# a workaround is applied here to have this library linked earlier
+LOCAL_SHARED_LIBRARIES += \
+				libstlport \
+
 ifeq ($(BOARD_CANT_REALLOCATE_OMX_BUFFERS),true)
 LOCAL_CFLAGS += -DBOARD_CANT_REALLOCATE_OMX_BUFFERS
 endif

@@ -31,6 +31,16 @@ class MediaBuffer;
 class MetaData;
 
 struct MediaSource : public BnMediaSource {
+
+		//adding this class for providing the access to ReadOptions in a backward-compatible way
+		struct ReadOpts : public ReadOptions
+		{
+        bool getSeekTo_(int64_t *time_us, int32_t *mode) const;
+        int64_t getLateBy_() const;
+        bool getNonBlocking_() const;
+
+    } __attribute__((packed)); // sent through Binder
+
     MediaSource();
 
     // To be called before any other methods on this object, except

@@ -22,4 +22,18 @@ MediaSource::MediaSource() {}
 
 MediaSource::~MediaSource() {}
 
+
+bool MediaSource::ReadOpts::getSeekTo_(
+        int64_t *time_us, int32_t *mode) const {
+		return getSeekTo(time_us, reinterpret_cast<SeekMode*>(mode));
+}
+
+int64_t MediaSource::ReadOpts::getLateBy_() const {
+		return getLateBy(); 
+}
+
+bool MediaSource::ReadOpts::getNonBlocking_() const {
+		return getNonBlocking();
+}
+
 }  // namespace android

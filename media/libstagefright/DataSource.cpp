@@ -164,6 +164,10 @@ bool DataSource::sniff(
 
 // static
 void DataSource::RegisterSniffer_l(SnifferFunc func) {
+		// just being safer by adding the null check
+		if(!func)
+				return;
+
     for (List<SnifferFunc>::iterator it = gSniffers.begin();
          it != gSniffers.end(); ++it) {
         if (*it == func) {

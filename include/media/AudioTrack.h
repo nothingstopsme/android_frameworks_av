@@ -315,6 +315,25 @@ public:
                             const audio_attributes_t* pAttributes = NULL,
                             bool doNotReconnect = false,
                             float maxRequiredSpeed = 1.0f);
+						// the backward-compatible version of set()
+						status_t		set(
+                         audio_stream_type_t streamType,
+                         uint32_t sampleRate,
+                         audio_format_t format,
+                         audio_channel_mask_t channelMask,
+                         size_t frameCount,
+                         audio_output_flags_t flags,
+                         callback_t cbf,
+                         void* user,
+                         uint32_t notificationFrames,
+                         const sp<IMemory>& sharedBuffer,
+                         bool threadCanCallJava,
+                         int sessionId,
+                         transfer_type transferType,
+                         const audio_offload_info_t *offloadInfo,
+                         int uid,
+                         pid_t pid,
+                         const audio_attributes_t* pAttributes);
 
     /* Result of constructing the AudioTrack. This must be checked for successful initialization
      * before using any AudioTrack API (except for set()), because using
@@ -666,7 +685,9 @@ public:
      *  raw         pointer to the buffer
      */
             status_t    obtainBuffer(Buffer* audioBuffer, int32_t waitCount,
-                                size_t *nonContig = NULL);
+                                size_t *nonContig);
+						//making obtainBuffer() two overloading functions instead of using default argument for "nonConfig" for backward compatibility
+						status_t		obtainBuffer(Buffer* audioBuffer, int32_t waitCount);
 
 private:
     /* If nonContig is non-NULL, it is an output parameter that will be set to the number of
@@ -691,6 +712,8 @@ public:
      *  raw         ignored
      */
             void        releaseBuffer(const Buffer* audioBuffer);
+						// the backward-compatible version of releaseBuffer()
+						void				releaseBuffer(Buffer* audioBuffer);
 
     /* As a convenience we provide a write() interface to the audio buffer.
      * Input parameter 'size' is in byte units.

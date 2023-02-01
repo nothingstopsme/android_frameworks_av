@@ -27,7 +27,13 @@ LOCAL_SHARED_LIBRARIES := \
     liblog \
     libbinder \
     libdl \
-    libselinux
+    libselinux \
+
+# vendor's drm libraries require this, but it seems like there will be linking issues
+# if it is loaded upon the calling of dlopen() on vendor's drm libraries; therefore
+# a workaround is applied here to have this library linked earlier
+LOCAL_SHARED_LIBRARIES += \
+		libstlport \
 
 LOCAL_STATIC_LIBRARIES := libdrmframeworkcommon
 

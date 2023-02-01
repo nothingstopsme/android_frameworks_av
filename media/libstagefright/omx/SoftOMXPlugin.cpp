@@ -86,6 +86,10 @@ static const struct {
     { "OMX.dolby.eac3.decoder", "ddpdec", "audio_decoder.eac3" },
     { "OMX.dolby.eac3_joc.decoder", "ddpdec", "audio_decoder.eac3_joc" },
 #endif // DOLBY_END
+
+		//additional codec support
+		{ "OMX.google.mjpg.decoder", "mjpgdec", "video_decoder.mjpg" },
+		{ "OMX.google.imaadpcm.decoder", "imaadpcmdec", "audio_decoder.imaadpcm" },
 };
 
 static const size_t kNumComponents =

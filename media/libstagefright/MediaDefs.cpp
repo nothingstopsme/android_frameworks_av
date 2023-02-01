@@ -116,4 +116,9 @@ const char *MEDIA_MIMETYPE_CONTAINER_VC1 = "video/vc1";
 const char *MEDIA_MIMETYPE_CONTAINER_HEVC = "video/hevc";
 const char *MEDIA_MIMETYPE_CONTAINER_FFMPEG = "video/ffmpeg";
 
+//additional codecs support
+const char *MEDIA_MIMETYPE_VIDEO_MJPG = "video/mjpg";
+
+const char *MEDIA_MIMETYPE_AUDIO_IMA = "audio/x-ima";
+
 }  // namespace android
